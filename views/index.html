@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+</head>
+
+<body>
+    <h1></h1>
+    <p>Node.js服务简单增删改查实现</p>
+</body>
+<form class="inform" method="post" accept-charset="utf-8">
+    <button class="btn btn-default" id="btn" type="button" onclick="searchItem()">查询全部</button>
+    <div class="from-group">
+        <label>输入内容</label>
+        <input class="form-control createContent" type="text" name="content" placeholder="Enter Todo" />
+    </div>
+    <div class="from-group" style="margin: 10px 0px;">
+        <button type="button" class="btn btn-info" onclick="cerateItem()">新增</button>
+    </div>
+    <div class="content">
+
+    </div>
+</form>
+<input type="text" value="" class="inputBox">
+<div class="btnBox">
+    <!-- <button type="button" class="btn btn-info" onclick="submit(this)">确认修改</button> -->
+</div>
+<script typet="text/javascript" src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+<script>
+    //创建数据
+    function cerateItem() {
+        console.log("aaa")
+        var obj = {};
+        obj.content = $('.createContent').val();
+        if (obj.content != '') {
+            $.post('http://localhost:3000/create', obj, function (res) {
+                if (res.status === "ok") {
+                    console.log('新增成功');
+                    searchItem()
+                } else {
+                    alert(res.msg)
+                }
+            })
+        } else {
+            alert('不能为空');
+        }
+    }
+
+    function searchItem() {
+        console.log("查询")
+        paint()
+    }
+    function paint() {
+        $.ajax({
+            type: 'POST',
+            async: true,
+            url: 'http://localhost:3000/search',
+            data: {},
+            success: function (res) {
+                console.log("aaa", res);
+                var content = document.getElementsByClassName("content")[0];
+                var str = ""
+                for (var i = 0; i < res.data.length; i++) {
+                    str += '<div ondbclick=deleteItem(this) onclick=updateOne(this) id=' + res.data[i]["_id"] + '>' + res.data[i].content + '</div>'
+                    // str += '<div onclick=deleteItem(' + res.data[i]["_id"] + ')>' + res.data[i].content + '</div>'
+                }
+                content.innerHTML = str
+                console.log("sss", content, str)
+            },
+        });
+    }
+    function deleteItem(self) {
+        console.log("this", self.id)
+        $.ajax({
+            type: 'POST',
+            async: true,
+            url: 'http://localhost:3000/deleteOne',
+            data: { id: self.id },
+            success: function (res) {
+                console.log("删除成功", res);
+                paint()
+            },
+        });
+    }
+    function updateOne(self) {
+        var inputBox = document.getElementsByClassName("inputBox")[0];
+        inputBox.value = self.innerHTML
+        inputBox.id = self.id
+        console.log("this", self)
+        var btnBox =document.getElementsByClassName('btnBox')[0]
+        btnBox.innerHTML=""
+        var str=""
+        str="<button type='button' class='btn btn-info' id="+self.id+" onclick=submit(this)>确认修改</button>"
+        btnBox.innerHTML=str
+    }
+    function submit(self) {
+        console.log("self", self)
+        var inputBox = document.getElementsByClassName("inputBox")[0];
+        $.ajax({
+            type: 'POST',
+            async: true,
+            url: 'http://localhost:3000/updateOne',
+            data: { id: self.id,   content :inputBox.value},
+            success: function (res) {
+                console.log("修改成功", res);
+                paint()
+            },
+        });
+    }
+</script>
+
+</html>
