@@ -62,7 +62,7 @@
                 var content = document.getElementsByClassName("content")[0];
                 var str = ""
                 for (var i = 0; i < res.data.length; i++) {
-                    str += '<div ondbclick=deleteItem(this) onclick=updateOne(this) id=' + res.data[i]["_id"] + '>' + res.data[i].content + '</div>'
+                    str += '<div  onclick=updateOne(this) id=' + res.data[i]["_id"] + '>' + res.data[i].content + '</div><button type="button" onclick=deleteItem(this) id=' + res.data[i]["_id"] + '>删除</button>'
                     // str += '<div onclick=deleteItem(' + res.data[i]["_id"] + ')>' + res.data[i].content + '</div>'
                 }
                 content.innerHTML = str
@@ -85,6 +85,7 @@
     }
     function updateOne(self) {
         var inputBox = document.getElementsByClassName("inputBox")[0];
+        console.log("self",self)
         inputBox.value = self.innerHTML
         inputBox.id = self.id
         console.log("this", self)
