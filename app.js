@@ -1,16 +1,28 @@
+/*
+ * @Author: your name
+ * @Date: 2020-06-08 09:24:46
+ * @LastEditTime: 2020-06-10 15:11:51
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \express\myTest\app.js
+ */
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var ejs=require('ejs');
+var ejs = require('ejs');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
 
-require('./db');
+//token校验
+const expressJWT = require('express-jwt')
+let { PRIVATE_KEY } = require('./public/javascripts/store')
+
+require('./db/db');
 // view engine setup
 // app.set('views', path.join(__dirname, 'views'));
 // app.engine('html',ejs.__express);
@@ -32,17 +44,27 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//TOkEN 校验
+app.use(expressJWT({
+  　　secret: PRIVATE_KEY
+  }).unless({
+  　　path: ['/users/create','/users/login'] //⽩白名单,除了了这⾥里里写的地址，其他的URL都需要验证
+  }));
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
+  if(err.name==="UnauthorizedError"){
+    res.status(401).send({status:"error",msg:"token验证失败！"})
+  }
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
