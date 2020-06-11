@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-06-08 09:24:46
- * @LastEditTime: 2020-06-11 10:15:32
+ * @LastEditTime: 2020-06-11 18:27:58
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \express\myTest\app.js
@@ -48,11 +48,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressJWT({
   　　secret: PRIVATE_KEY
   }).unless({
-  　　path: ['/users/create','/users/login'] //⽩白名单,除了了这⾥里里写的地址，其他的URL都需要验证
+  　　path: ['/user/create','/user/login'] //⽩白名单,除了了这⾥里里写的地址，其他的URL都需要验证
   }));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+// app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
