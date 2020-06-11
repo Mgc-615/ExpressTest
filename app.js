@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-06-08 09:24:46
- * @LastEditTime: 2020-06-10 15:11:51
+ * @LastEditTime: 2020-06-11 10:15:32
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \express\myTest\app.js
@@ -63,7 +63,13 @@ app.use(function (req, res, next) {
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   if(err.name==="UnauthorizedError"){
-    res.status(401).send({status:"error",msg:"token验证失败！"})
+    console.log("err.name",err.message )
+    const errorMsg = {
+      "jwt expired":"token已过期!",
+      "invalid signature":"token验证失败！",
+      "No authorization token was found":"请携带token！"
+    }
+    res.status(401).send({status:"error",msg:errorMsg[err.message]})
   }
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

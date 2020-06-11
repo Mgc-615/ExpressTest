@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-06-08 09:24:46
- * @LastEditTime: 2020-06-10 15:36:34
+ * @LastEditTime: 2020-06-11 09:42:13
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \express\myTest\routes\users.js
@@ -47,7 +47,7 @@ router.post('/login', function (req, res) {
     // Prints "Space Ghost is a talk show host".
     if (obj) {
       let userName = obj.user_name
-      let token = jwt.sign({ userName }, PRIVATE_KEY, { expiresIn: EXPIRESD })
+      let token = jwt.sign({ userName }, PRIVATE_KEY, { expiresIn: EXPIRESD})
       var LoginLogModel = mongoose.model('loginLog');//引入模型
       new LoginLogModel({ //实例化对象，新建数据
         user_name: userName,
@@ -64,6 +64,9 @@ router.post('/login', function (req, res) {
 });
 router.post('/search', function (req, res, next) {
   console.log("req.user",req.user)
+  // let flag =(new Date().getTime() -req.user.iat)<EXPIRESD;
+  // console.log("flag",flag,Number(new Date().getTime()) -req.user.iat,EXPIRESD)
+  // flag?"":res.send({status:"error",msg:"token已过期!"})
   var UserModel = mongoose.model('user');//引入模型
   UserModel.
     find().
