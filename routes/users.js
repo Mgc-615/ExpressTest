@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-06-08 09:24:46
- * @LastEditTime: 2020-06-11 09:42:13
+ * @LastEditTime: 2020-06-15 10:24:50
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \express\myTest\routes\users.js
@@ -99,12 +99,14 @@ router.post('/deleteOne', function (req, res, next) {
 });
 router.post('/updateOne', function (req, res, next) {
   var UserModel = mongoose.model('user');//引入模型
+  console.log("req",req.body)
   UserModel.
     findById(req.body.id, function (err, obj) {
+      console.log("log",obj)
       if (err) {
         console.error(err);
       } else {
-        obj.content = req.body.content
+        obj.user_password = req.body.userPassword
         obj.save(function (err, obj1) {
           if (err) {
             console.error(err);
